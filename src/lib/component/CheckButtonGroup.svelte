@@ -1,11 +1,11 @@
 <script lang="ts" generics="T">
     export let options: T[]
-    export let value: NoInfer<T> | undefined = undefined
+    export let value: NoInfer<T>[]
 </script>
 
 {#each options as option (option)}
     <label>
-        <input type="radio" bind:group={value} value={option} />
+        <input type="checkbox" bind:group={value} value={option} />
         <slot {option}>
             {option}
         </slot>

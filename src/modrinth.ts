@@ -19,6 +19,8 @@ export const TAGS = (async () => {
     return { categories, versions, loaders, projectTypes, sideTypes }
 })()
 
+export type TagTypes = Awaited<typeof TAGS>
+
 export async function getProjectCount(facets: Facets): Promise<number> {
     return (await modrinth.searchProjects({
         facets: compileFacets(facets),

@@ -2,7 +2,7 @@ import type { Category, Loader, GameVersion } from '@xmcl/modrinth';
 
 
 export interface FacetTypes {
-    project_type: 'mod' | 'modpack';
+    project_type: string;
     categories: Category | Loader;
     versions: GameVersion;
     client_side: string;
