@@ -5,5 +5,5 @@
     export let tags: Awaited<typeof TAGS>
 </script>
 
-{tags.categories.filter(e => e.project_type === 'mod').map(e => e.name)}
+{JSON.stringify(tags.categories)}
 

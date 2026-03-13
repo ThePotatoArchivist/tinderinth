@@ -1,4 +1,5 @@
-import { ModrinthV2Client, type Category, type GameVersion, type Loader, type SearchProjectOptions } from '@xmcl/modrinth'
+import { ModrinthV2Client, type Category, type GameVersion, type Loader } from '@xmcl/modrinth'
+import { getProjectTypeTags, getSideTypeTags } from './lib/modrinth-ext'
 
 export const modrinth = new ModrinthV2Client({
     headers: {
@@ -6,14 +7,12 @@ export const modrinth = new ModrinthV2Client({
     }
 })
 
-export type SideType = 'required' | 'optional' | 'unsupported' | 'unknown'
-
 export interface FacetTypes {
     project_type: 'mod' | 'modpack',
     categories: Category | Loader,
     versions: GameVersion,
-    client_side: SideType,
-    server_side: SideType,
+    client_side: string,
+    server_side: string,
 }
 
 export interface Facet<T extends keyof FacetTypes> {
@@ -44,12 +43,14 @@ export function compileFacets(facets: Facets): string {
 }
 
 export const TAGS = (async () => {
-    const [categories, versions, loaders] = await Promise.all([
+    const [categories, versions, loaders, projectTypes, sideTypes] = await Promise.all([
         modrinth.getCategoryTags(), 
         modrinth.getGameVersionTags(), 
         modrinth.getLoaderTags(),
+        getProjectTypeTags(modrinth),
+        getSideTypeTags(modrinth),
     ])
-    return { categories, versions, loaders }
+    return { categories, versions, loaders, projectTypes, sideTypes }
 })()
 
 export async function getProjectCount(facets: Facets): Promise<number> {

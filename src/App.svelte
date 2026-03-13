@@ -1,6 +1,6 @@
 <script lang="ts">
-    import FilterControls from './lib/FilterControls.svelte';
-    import { compileFacets, facet, modrinth, TAGS } from './lib/modrinth';
+    import FilterControls from './FilterControls.svelte';
+    import { TAGS } from './modrinth';
     
 </script>
 
