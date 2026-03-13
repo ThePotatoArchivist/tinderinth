@@ -14,13 +14,13 @@
 
     export let facets: Facets = []
     export let tags: TagTypes
-    const { categories, loaders, projectTypes, sideTypes, versions } = tags
+    const { categories, loaders, projectTypes, versions } = tags
     
     let selectedProjectType: string | undefined
     let categoryFilters: Map<Category, State>
     let selectedLoaders: Loader[] = []
-    let serverSide: string
-    let clientSide: string
+    let serverSide: boolean
+    let clientSide: boolean
     let selectedVersions: GameVersion[] = []
 
     let allLoaders = false
@@ -38,6 +38,20 @@
         ...categoryFilters.entries().filter(([_, state]) => state === false).map(([category]) => [facet('categories', category, '!=')]),
         selectedLoaders.map(loader => facet('categories', loader)),
         selectedVersions.map(version => facet('versions', version)),
+        clientSide 
+            ? serverSide
+                ? [facet('client_side', 'required')] 
+                : [facet('client_side', 'unsupported', '!=')] 
+            : serverSide 
+                ? [facet('client_side', 'required', '!=')] 
+                : [],
+        serverSide 
+            ? clientSide
+                ? [facet('server_side', 'required')] 
+                : [facet('server_side', 'unsupported', '!=')] 
+            : clientSide 
+                ? [facet('server_side', 'required', '!=')] 
+                : [],
     ].filter(e => e.length > 0)
 </script>
 
@@ -66,13 +80,14 @@
     {/if}
     
     <div>
-        Server:
-        <ButtonGroup options={sideTypes} bind:value={serverSide} />
-    </div>
-
-    <div>
-        Client:
-        <ButtonGroup options={sideTypes} bind:value={clientSide} />
+        <label>
+            <input type="checkbox" bind:checked={clientSide} />
+            Client
+        </label>
+        <label>
+            <input type="checkbox" bind:checked={serverSide} />
+            Server
+        </label>
     </div>
     
     <div>

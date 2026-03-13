@@ -8,9 +8,7 @@
     
     let projects: SearchResultHit[] = []
     
-    $: {
-        getProjects(facets, 10).then(result => projects = result.hits)
-    }
+    $: getProjects(facets, 10).then(result => projects = result.hits)
 </script>
 
 <main>
@@ -23,7 +21,7 @@
     {compileFacets(facets)}
     
     {#each projects as project}
-        <div>{project.title}</div>
+        <div><a href="https://modrinth.com/project/{project.project_id}">{project.title}</a></div>
     {/each}
 </main>
 

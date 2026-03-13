@@ -9,14 +9,14 @@ export const modrinth = new ModrinthV2Client({
 })
 
 export const TAGS = (async () => {
-    const [categories, versions, loaders, projectTypes, sideTypes] = await Promise.all([
+    const [categories, versions, loaders, projectTypes] = await Promise.all([
         modrinth.getCategoryTags(), 
         modrinth.getGameVersionTags(), 
         modrinth.getLoaderTags(),
         getProjectTypeTags(modrinth),
-        getSideTypeTags(modrinth),
+        // getSideTypeTags(modrinth),
     ])
-    return { categories, versions, loaders, projectTypes, sideTypes }
+    return { categories, versions, loaders, projectTypes }
 })()
 
 export type TagTypes = Awaited<typeof TAGS>

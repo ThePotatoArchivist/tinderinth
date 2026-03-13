@@ -1,12 +1,13 @@
 import type { Category, Loader, GameVersion } from '@xmcl/modrinth';
 
+type SideType = 'required' | 'optional' | 'unsupported'
 
 export interface FacetTypes {
     project_type: string;
     categories: Category | Loader;
     versions: GameVersion;
-    client_side: string;
-    server_side: string;
+    client_side: SideType;
+    server_side: SideType;
 }
 
 export interface Facet<T extends keyof FacetTypes> {
