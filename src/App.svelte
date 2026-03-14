@@ -3,6 +3,7 @@
     import FilterControls from './FilterControls.svelte';
     import { type Facets } from './lib/modrinth/facets';
     import { getProjectCount, getRandomProject, TAGS } from './modrinth';
+    import ProjectCard from './ProjectCard.svelte';
     
     let facets: Facets | undefined
     let projectType: string | undefined
@@ -37,14 +38,10 @@
             </details>
 
             <div>
-                <button on:click={() => count.then(roll)}>Next</button>
                 {#if project !== undefined}
-                    {#if project.featured_gallery !== null}
-                        <img src={project.featured_gallery} alt="{project.title} gallery image" />
-                    {/if}
-                    <img src={project.icon_url} alt="{project.title} icon" />
-                    <a href="https://modrinth.com/project/{project.project_id}">{project.title}</a>
+                    <ProjectCard {project} />
                 {/if}
+                <button on:click={() => count.then(roll)}>Next</button>
             </div>
         {/if}
     {/await}
