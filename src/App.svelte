@@ -2,7 +2,7 @@
     import type { SearchResultHit } from '@xmcl/modrinth';
     import FilterControls from './FilterControls.svelte';
     import { type Facets } from './lib/modrinth/facets';
-    import { getProjectCount, getRandomProject, TAGS } from './modrinth';
+    import { getProjectCount, getProjectUrl, getRandomProject, TAGS } from './modrinth';
     import ProjectCard from './ProjectCard.svelte';
     import Swipable from './lib/component/Swipable.svelte';
     
@@ -57,7 +57,7 @@
                     <summary>Saved Projects</summary>
                     <ul>
                         {#each savedProjects as savedProject}
-                            <li>{savedProject.title}</li>
+                            <li><a href={getProjectUrl(savedProject.project_id)}>{savedProject.title}</a></li>
                         {/each}
                     </ul>
                 </details>

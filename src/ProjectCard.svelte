@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { SearchResultHit } from "@xmcl/modrinth";
     import { toColor } from "./lib/util/misc";
+    import { getProjectUrl } from "./modrinth";
 
     export let project: SearchResultHit
     
@@ -16,7 +17,7 @@
     <div class="icon-container">
         <img class="icon" src={project.icon_url} alt="{project.title} icon" />
     </div>
-    <h2><a href="https://modrinth.com/project/{project.project_id}" target="_blank" on:touchstart|stopPropagation /*prevent swiping*/>{project.title}</a></h2>
+    <h2><a href={getProjectUrl(project.project_id)} target="_blank" on:touchstart|stopPropagation /*prevent swiping*/>{project.title}</a></h2>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="description" on:touchstart|stopPropagation>
         <p>

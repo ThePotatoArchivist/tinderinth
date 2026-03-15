@@ -39,3 +39,7 @@ export function getProjects(facets: Facets, limit: number | undefined = undefine
 export async function getRandomProject(facets: Facets, count: number) {
     return (await getProjects(facets, 1, Math.floor(Math.random() * count))).hits[0]
 }
+
+export function getProjectUrl(id: string) {
+    return `https://modrinth.com/project/${id}`
+}
