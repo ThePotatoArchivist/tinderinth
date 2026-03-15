@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { TagTypes } from './modrinth';
-    import { facet, type Facets } from './lib/modrinth/facets';
+    import { compileFacets, facet, type Facets } from './lib/modrinth/facets';
     import type { Category, GameVersion, Loader } from '@xmcl/modrinth';
     import FilterButtonGroup from './lib/component/FilterButtonGroup.svelte';
     import type { State } from './lib/component/FilterButton.svelte';
     import { associate, groupby } from './lib/util/misc';
     import CheckButtonGroup from './lib/component/CheckButtonGroup.svelte';
+    import { SvelteMap } from 'svelte/reactivity';
     
     const MAIN_MOD_LOADERS = [ 'fabric', 'forge', 'neoforge' ]
     
@@ -16,7 +17,7 @@
     const { categories, loaders, projectTypes, versions } = tags
     export let projectType: string
     
-    let categoryFilters: Map<Category, State>
+    let categoryFilters: SvelteMap<Category, State>
     let selectedLoaders: Loader[] = []
     let serverSide: boolean
     let clientSide: boolean
@@ -32,7 +33,7 @@
     )
     $: relevantVersions = allVersions ? versions : versions.filter(e => e.version_type === 'release')
     
-    $: categoryFilters = associate(relevantCategories, () => undefined)
+    $: categoryFilters = new SvelteMap(associate(relevantCategories, () => undefined))
     $: categoryHeaders = groupby(relevantCategories, category => category.header)
     
     $: facets = [
@@ -124,3 +125,5 @@
         height: 1em;
     }
 </style>
+
+{compileFacets(facets)}
