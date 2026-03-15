@@ -17,14 +17,14 @@
     let offsetX = $state(0)
     let offsetY = $state(0)
     let movementX = 0
-    let dragged = false
+    let dragged = $state(false)
     let lastTouchX = 0
     let lastTouchY = 0
     let element: HTMLDivElement
 
     let swipeDirection: number | undefined
     function animation(node: Element): TransitionConfig {
-        return swipeDirection ? fly(node, {duration: 1000, x: swipeDirection}) : {duration: 0}
+        return swipeDirection ? fly(node, {duration: 500, x: swipeDirection}) : {duration: 0}
     }
     
     function swipeLeft() {
@@ -97,7 +97,7 @@
 <svelte:window {onmousemove} {onmouseup} {ontouchmove} ontouchend={onmouseup} />
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div bind:this={element} style:translate="{offsetX}px {offsetY}px" {onmousedown} {ontouchstart} out:animation|global>
+<div bind:this={element} style:translate="{offsetX}px {offsetY}px" class:dragged {onmousedown} {ontouchstart} out:animation|global>
     {@render children()}
 </div>
 
@@ -111,7 +111,8 @@
         -webkit-user-drag: none;
     }
     
-    div:active {
+    div.dragged {
         cursor: grabbing;
+        z-index: 10;
     }
 </style>

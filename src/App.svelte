@@ -47,23 +47,23 @@
                 <button on:click={() => count.then(roll)}>Go</button>
             {:else}
                 <div class="card-container">
-                    {#await projectP}
-                        Loading...
-                    {:then project} 
-                        {#key project}
-                            <Swipable
-                                onSwipeLeft={() => {
-                                    count.then(roll)
-                                }}
-                                onSwipeRight={() => {
-                                    savedProjects = [...savedProjects, project]
-                                    count.then(roll)
-                                }}
-                            >
-                                <ProjectCard {project} />
-                            </Swipable>
-                        {/key}
-                    {/await}
+                    {#key projectP}
+                        {#await projectP}
+                            Loading...
+                        {:then project} 
+                                <Swipable
+                                    onSwipeLeft={() => {
+                                        count.then(roll)
+                                    }}
+                                    onSwipeRight={() => {
+                                        savedProjects = [...savedProjects, project]
+                                        count.then(roll)
+                                    }}
+                                >
+                                    <ProjectCard {project} />
+                                </Swipable>
+                        {/await}
+                    {/key}
                 </div>
             {/if}
             <details>
