@@ -14,7 +14,6 @@
     
     let facets: Facets
     
-    let queueStale = true
     let projectQueue: AsyncIterator<SearchResultHit> | undefined
     let projectP: Promise<SearchResultHit> | undefined
 
@@ -25,19 +24,18 @@
         save: SearchResultHit
     }>()
     
-    $: if (facets) queueStale = true
+    $: if (facets) projectQueue = undefined
             
     function showNext() {
         if (facets === undefined) return
 
-        if (queueStale) {
+        if (projectQueue === undefined) {
             projectP = new Promise(() => {})
             getProjectCount(facets)
                 .then(count => {
                     setupQueue(facets!, count)
                     shiftQueue()
                 })
-            queueStale = false
         } else
             shiftQueue()
     }
@@ -47,12 +45,7 @@
     }
     
     function setupQueue(facets: Facets, count: number) {
-        if (facets === undefined) {
-            projectQueue = undefined
-            projectP = undefined
-        } else {
-            projectQueue = prequeue(3, () => getRandomProject(facets, count).then(preload))
-        }
+        projectQueue = prequeue(3, () => getRandomProject(facets, count).then(preload))
     }
 
 </script>
