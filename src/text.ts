@@ -3,7 +3,6 @@ import textFile from './assets/text.json'
 const CACHE: Record<string, string> = {...textFile}
 
 export function snakeToTitle(text: string) {
-    console.log(text)
     return text
         .split(/[_-](?=.)/)
         .map(word => word[0].toUpperCase() + word.substring(1))
