@@ -2,8 +2,19 @@
     import type { SearchResultHit } from "@xmcl/modrinth";
     import { toColor } from "./lib/util/misc";
     import { getProjectUrl } from "./modrinth";
+    import type { EventHandler } from "svelte/elements";
+    
+    const MAX_PIXELATED_IMAGE_WIDTH = 64
 
     export let project: SearchResultHit
+    
+    let image: HTMLImageElement | undefined
+    let pixelated = false
+    
+    const onImageLoad: EventHandler = event => {
+        console.log(image)
+        pixelated = image !== undefined && image.naturalHeight <= MAX_PIXELATED_IMAGE_WIDTH && image.naturalHeight <= MAX_PIXELATED_IMAGE_WIDTH
+    }
     
     $: color = toColor(project.color)
 </script>
@@ -15,9 +26,9 @@
         <img class="banner" src={project.featured_gallery} alt="{project.title} featured gallery" />
     {/if}
     <div class="icon-container">
-        <img class="icon" src={project.icon_url} alt="{project.title} icon" />
+        <img class="icon" class:pixelated src={project.icon_url} alt="{project.title} icon" bind:this={image} on:load={onImageLoad} />
     </div>
-    <h2><a href={getProjectUrl(project.project_id)} target="_blank" on:touchstart|stopPropagation /*prevent swiping*/>{project.title}</a></h2>
+    <h2><a href={getProjectUrl(project.project_id)} target="_blank" on:mousedown|stopPropagation on:touchstart|stopPropagation /*prevent swiping*/>{project.title}</a></h2>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="description">
         <p>
@@ -82,6 +93,10 @@
         display: block;
         aspect-ratio: 1;
         object-fit: contain;
+    }
+    
+    .pixelated {
+        image-rendering: pixelated;
     }
     
     img.banner {
