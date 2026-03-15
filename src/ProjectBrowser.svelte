@@ -8,6 +8,7 @@
     import { ArrowBackIcon, CloseIcon, FavoriteIcon, FilterIcon } from './icons';
     import { prequeue } from './lib/util/prequeue';
     import { createEventDispatcher } from 'svelte';
+    import PopupButton from './lib/component/PopupButton.svelte';
 
     export let projectType: string
     export let tags: TagTypes
@@ -71,13 +72,15 @@
     <ArrowBackIcon />
 </button>
 
-<details open>
-    <summary>
+<PopupButton>
+    <svelte:fragment slot="button">
         <FilterIcon />
         Filters
-    </summary>
+    </svelte:fragment>
+
     <FilterControls {tags} bind:facets {projectType} />
-</details>
+
+</PopupButton>
 
 {#if projectP === undefined}
     <button on:click={showNext}>Go</button>

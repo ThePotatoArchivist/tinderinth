@@ -4,6 +4,7 @@
     import ProjectBrowser from './ProjectBrowser.svelte';
     import { localStore } from './lib/util/localStore';
     import { text } from './text';
+    import PopupButton from './lib/component/PopupButton.svelte';
         
     let projectType: string | undefined
     let savedProjects: (SearchResultHit & {id: string} | Project)[] = []
@@ -34,14 +35,15 @@
             />
         {/if}
 
-        <details>
-            <summary>Saved Projects</summary>                    
+        <PopupButton>
+            <svelte:fragment slot="button">Saved Projects</svelte:fragment>
+
             <ul>
                 {#each savedProjects as savedProject}
                     <li><a href={getProjectUrl(savedProject.id)}>{savedProject.title}</a></li>
                 {/each}
             </ul>
-        </details>
+        </PopupButton>
     {/await}
     <p class="disclaimer">Accesses content from <a href="https://modrinth.com">modrinth.com</a>. NOT APPROVED BY OR ASSOCIATED WITH MODRINTH, RINTH INC., MINECRAFT, OR MOJANG</p>
 </main>
