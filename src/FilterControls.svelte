@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { TagTypes } from './modrinth';
-    import { compileFacets, facet, type Facets } from './lib/modrinth/facets';
+    import { facet, type Facets } from './lib/modrinth/facets';
     import type { Category, GameVersion, Loader } from '@xmcl/modrinth';
     import FilterButtonGroup from './lib/component/FilterButtonGroup.svelte';
     import type { State } from './lib/component/FilterButton.svelte';
@@ -14,13 +14,13 @@
 
     export let facets: Facets = []
     export let tags: TagTypes
-    const { categories, loaders, projectTypes, versions } = tags
+    const { categories, loaders, versions } = tags
     export let projectType: string
     
     let categoryFilters: SvelteMap<Category, State>
     let selectedLoaders: Loader[] = []
-    let serverSide: boolean
-    let clientSide: boolean
+    let serverSide: boolean = false
+    let clientSide: boolean = false
     let selectedVersions: GameVersion[] = []
 
     let allLoaders = false
@@ -125,5 +125,3 @@
         height: 1em;
     }
 </style>
-
-{compileFacets(facets)}

@@ -6,24 +6,34 @@
     import ProjectCard from './ProjectCard.svelte';
     import Swipable from './lib/component/Swipable.svelte';
     import { ArrowBackIcon, CloseIcon, FavoriteIcon, FilterIcon } from './icons';
+    import { prequeue } from './lib/util/prequeue';
     
     let facets: Facets | undefined
     let projectType: string | undefined
     
-    let rolling = false
+    let projectQueue: AsyncIterator<SearchResultHit> | undefined
     let projectP: Promise<SearchResultHit> | undefined
+
     let savedProjects: SearchResultHit[] = []
     
     let swipable: Swipable | undefined
     
-    $: count = facets === undefined ? Promise.resolve(0) : getProjectCount(facets)
+    $: count = facets === undefined ? undefined : getProjectCount(facets)
     
-    async function roll(count: number) {
-        if (facets === undefined || rolling) return
-        rolling = true
-        projectP = getRandomProject(facets, count)
-        await projectP
-        rolling = false
+    $: if (facets !== undefined) count?.then(count => setupQueue(facets!, count))
+    
+    function shiftQueue() {
+        projectP = projectQueue?.next().then(({value}) => value)
+    }
+    
+    function setupQueue(facets: Facets, count: number) {
+        if (facets === undefined) {
+            projectQueue = undefined
+            projectP = undefined
+        } else {
+            projectQueue = prequeue(3, () => getRandomProject(facets, count))
+            shiftQueue()
+        }
     }
 
 </script>
@@ -66,9 +76,7 @@
                 <FilterControls {tags} bind:facets {projectType} />
             </details>
 
-            {#if projectP === undefined}
-                <button on:click={() => count.then(roll)}>Go</button>
-            {:else}
+            {#if projectP !== undefined}
                 <div class="card-container">
                     {#key projectP}
                         {#await projectP}
@@ -77,11 +85,11 @@
                                 <Swipable
                                     bind:this={swipable}
                                     onSwipeLeft={() => {
-                                        count.then(roll)
+                                        shiftQueue()
                                     }}
                                     onSwipeRight={() => {
                                         savedProjects = [...savedProjects, project]
-                                        count.then(roll)
+                                        shiftQueue()
                                     }}
                                 >
                                     <ProjectCard {project} gameVersions={tags.versions} />
