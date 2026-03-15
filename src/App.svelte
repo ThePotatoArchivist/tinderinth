@@ -64,7 +64,15 @@
             </div>
         {/if}
     {/await}
+    <p class="disclaimer">NOT APPROVED BY OR ASSOCIATED WITH MODRINTH, RINTH INC., MINECRAFT, OR MOJANG</p>
 </main>
 
 <style>
+    .disclaimer {
+        opacity: 50%;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        margin: 1em;
+    }
 </style>
