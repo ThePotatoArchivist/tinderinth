@@ -59,6 +59,9 @@
 
 <div>
     <FilterButtonGroup bind:values={categoryFilters} let:option>
+        <div class="fit-icon">
+            {@html (option as Category).icon}
+        </div>
         {(option as Category).name}
     </FilterButtonGroup>
 </div>
@@ -71,6 +74,9 @@
         </label>
         
         <CheckButtonGroup options={relevantLoaders} bind:value={selectedLoaders} let:option>
+            <div class="fit-icon">
+                {@html option.icon}
+            </div>
             {option.name}
         </CheckButtonGroup>
     </div>
@@ -101,3 +107,11 @@
         {/each}
     </select>
 </div>
+
+<style>
+    .fit-icon {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+    }
+</style>
