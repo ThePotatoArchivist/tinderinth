@@ -1,12 +1,14 @@
 <script lang="ts">
-    import type { SearchResultHit } from "@xmcl/modrinth";
+    import type { GameVersion, SearchResultHit } from "@xmcl/modrinth";
     import { toColor } from "./lib/util/misc";
     import { getProjectUrl } from "./modrinth";
     import type { EventHandler } from "svelte/elements";
+    import { areConsecutivePatches } from "./lib/semver";
     
     const MAX_PIXELATED_IMAGE_WIDTH = 64
 
     export let project: SearchResultHit
+    export let gameVersions: GameVersion[]
     
     $: imageUrl = project.featured_gallery ?? project.gallery[0]
     
@@ -18,6 +20,19 @@
     }
     
     $: color = toColor(project.color)
+    $: displayVersions = project.versions
+        .map(v => gameVersions.find(gv => gv.version === v)!)
+        .filter((v, i, a) => v.version_type === 'release' || i + 1 === a.length)
+        .reduce<[first: GameVersion, last: GameVersion][]>((prev, current) => {
+            const last = prev.at(-1)
+            if (last !== undefined && areConsecutivePatches(last[1].version, current.version))
+                last[1] = current
+            else
+                prev.push([current, current])
+            return prev
+        }, [])
+        .map(([start, end]) => start === end ? start.version : `${start.version}-${end.version}`)
+        .reverse()
 </script>
 
 <div class="card">
@@ -39,7 +54,7 @@
             {#each project.display_categories as category}
                 <div class="badge">{category}</div>
             {/each}
-            {#each project.versions as version}
+            {#each displayVersions as version}
                 <div class="badge">{version}</div>
             {/each}
         </div>

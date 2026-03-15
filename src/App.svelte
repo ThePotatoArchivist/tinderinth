@@ -79,7 +79,7 @@
                                         count.then(roll)
                                     }}
                                 >
-                                    <ProjectCard {project} />
+                                    <ProjectCard {project} gameVersions={tags.versions} />
                                 </Swipable>
                         {/await}
                     {/key}
