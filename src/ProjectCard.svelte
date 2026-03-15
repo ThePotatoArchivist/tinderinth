@@ -4,6 +4,7 @@
     import { getProjectUrl, ICON_CACHE } from "./modrinth";
     import type { EventHandler } from "svelte/elements";
     import { areConsecutivePatches } from "./lib/semver";
+    import { OpenNewIcon } from "./icons";
     
     const MAX_PIXELATED_IMAGE_WIDTH = 64
 
@@ -65,7 +66,12 @@
     <div class="icon-container">
         <img class="icon" class:pixelated src={project.icon_url} alt="{project.title} icon" bind:this={image} on:load={onImageLoad} />
     </div>
-    <h2><a href={getProjectUrl(project.project_id)} target="_blank" on:mousedown|stopPropagation on:touchstart|stopPropagation /*prevent swiping*/>{project.title}</a></h2>
+    <h2>
+        <a href={getProjectUrl(project.project_id)} target="_blank" on:mousedown|stopPropagation on:touchstart|stopPropagation /*prevent swiping*/>
+            {project.title}
+            <OpenNewIcon />
+        </a>
+    </h2>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="description">
         <p>
