@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onDestroy, type Snippet } from "svelte";
-import type { MouseEventHandler } from "svelte/elements";
+import type { EventHandler, MouseEventHandler, TouchEventHandler } from "svelte/elements";
     import { fade } from "svelte/transition";
     
     const MIN_SWIPE_MOVEMENT = 5
@@ -18,6 +18,8 @@ import type { MouseEventHandler } from "svelte/elements";
     let offsetY = $state(0)
     let movementX = 0
     let dragged = false
+    let lastTouchX = 0
+    let lastTouchY = 0
     let element: HTMLDivElement
 
     let animateCallback: number | undefined
@@ -53,17 +55,30 @@ import type { MouseEventHandler } from "svelte/elements";
         animate()
     }
     
-    const onmousedown: MouseEventHandler<HTMLElement> = event => {
+    const onmousedown: EventHandler<Event, HTMLElement> = event => {
         dragged = true
+        event.preventDefault()
     }
     
     const onmousemove: MouseEventHandler<Window> = event => {
         if (!dragged) return
         offsetX += movementX = event.movementX
         offsetY += event.movementY
+        event.preventDefault()
     }
     
-    const onmouseup: MouseEventHandler<Window> = _event => {
+    const ontouchmove: TouchEventHandler<Window> = event => {
+        if (!dragged) return
+        const touch = event.touches.item(0)
+        if (touch === null) return
+        offsetX += movementX = touch.screenX - lastTouchX
+        offsetY += touch.screenY - lastTouchY
+        lastTouchX = touch.screenX
+        lastTouchY = touch.screenY
+        event.preventDefault()
+    }
+    
+    const onmouseup: EventHandler<Event, Window> = event => {
         if (!dragged) return
         dragged = false
         if (movementX > MIN_SWIPE_MOVEMENT)
@@ -78,14 +93,17 @@ import type { MouseEventHandler } from "svelte/elements";
             offsetX = 0
             offsetY = 0
             movementX = 0
+            lastTouchX = 0
+            lastTouchY = 0
         }
+        event.preventDefault()
     }
 </script>
 
-<svelte:window {onmousemove} {onmouseup} />
+<svelte:window {onmousemove} {onmouseup} {ontouchmove} ontouchend={onmouseup} />
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div bind:this={element} style:translate="{offsetX}px {offsetY}px" {onmousedown} out:fade|global={{duration: 250}}>
+<div bind:this={element} style:translate="{offsetX}px {offsetY}px" {onmousedown} ontouchstart={onmousedown} out:fade|global={{duration: 250}}>
     {@render children()}
 </div>
 
