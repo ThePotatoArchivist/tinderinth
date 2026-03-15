@@ -4,7 +4,7 @@ import { type Facets, compileFacets } from './lib/modrinth/facets'
 
 export const modrinth = new ModrinthV2Client({
     headers: {
-        'User-Agent': `ThePotatoArchivist/mod-dating-app`,
+        'User-Agent': `ThePotatoArchivist/mod-cute`,
     }
 })
 
