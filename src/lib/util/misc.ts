@@ -18,7 +18,3 @@ export function toColor(num: number) {
         r = (num & 0xFF0000) >>> 16
     return `rgb(${r},${g},${b})`
 }
-
-export function propertyCast<T>(obj: {}, name: string): T {
-    return (obj as any)[name] as T
-}

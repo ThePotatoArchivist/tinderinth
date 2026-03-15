@@ -1,10 +1,10 @@
 <script lang="ts">
     import type { SearchResultHit } from "@xmcl/modrinth";
-    import { propertyCast, toColor } from "./lib/util/misc";
+    import { toColor } from "./lib/util/misc";
 
     export let project: SearchResultHit
     
-    $: color = toColor(propertyCast<number>(project, 'color'))
+    $: color = toColor(project.color)
 </script>
 
 <div class="card">
@@ -23,7 +23,7 @@
             {project.description}
         </p>
         <ul>
-            {#each propertyCast<string[]>(project, 'display_categories') as category (category)}
+            {#each project.display_categories as category (category)}
                 <li>{category}</li>
             {/each}
         </ul>
