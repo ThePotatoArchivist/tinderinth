@@ -16,8 +16,8 @@
 
     let offsetX = $state(0)
     let offsetY = $state(0)
-    let movementX = 0
     let dragged = $state(false)
+    let movementX = 0
     let lastTouchX = 0
     let lastTouchY = 0
     let element: HTMLDivElement
@@ -28,12 +28,14 @@
     }
     
     export function swipeLeft() {
+        element.classList.add('exiting')
         swipeDirection = -SWIPE_ANIMATION_DISTANCE
         onSwipe?.()
         onSwipeLeft?.()
     }
     
     export function swipeRight() {
+        element.classList.add('exiting')
         swipeDirection = SWIPE_ANIMATION_DISTANCE
         onSwipe?.()
         onSwipeRight?.()
@@ -117,8 +119,11 @@
         -webkit-user-drag: none;
     }
     
-    div.dragged {
+    .dragged {
         cursor: grabbing;
+    }
+    
+    :global(.exiting), .dragged {
         z-index: 10;
     }
 </style>
