@@ -64,7 +64,7 @@
             </div>
         {/if}
     {/await}
-    <p class="disclaimer">NOT APPROVED BY OR ASSOCIATED WITH MODRINTH, RINTH INC., MINECRAFT, OR MOJANG</p>
+    <p class="disclaimer">Accesses content NOT APPROVED BY OR ASSOCIATED WITH MODRINTH, RINTH INC., MINECRAFT, OR MOJANG</p>
 </main>
 
 <style>

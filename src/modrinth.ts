@@ -1,10 +1,10 @@
 import { ModrinthV2Client, type SearchResult } from '@xmcl/modrinth'
-import { getProjectTypeTags, getSideTypeTags } from './lib/modrinth/tags'
+import { getProjectTypeTags } from './lib/modrinth/tags'
 import { type Facets, compileFacets } from './lib/modrinth/facets'
 
 export const modrinth = new ModrinthV2Client({
     headers: {
-        'User-Agent': `ThePotatoArchivist/tinderinth`,
+        'User-Agent': `ThePotatoArchivist/mod-dating-app`,
     }
 })
 
