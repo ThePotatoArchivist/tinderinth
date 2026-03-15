@@ -3,7 +3,7 @@ export function associate<K, V>(keys: Iterable<K>, transform: (key: K) => V): Ma
     const map = new Map<K, V>()
     for (const key of keys)
         map.set(key, transform(key))
-    return map;
+    return map
 }
 
 export function toColor(num: number) {
@@ -15,10 +15,10 @@ export function toColor(num: number) {
 }
 
 export function groupby<T, G>(values: Iterable<T>, getGroup: (value: T) => G): Map<G, T[]> {
-    const groups = new Map<G, T[]>();
+    const groups = new Map<G, T[]>()
     for (const value of values) {
         const group = getGroup(value)
         groups.get(group)?.push(value) ?? groups.set(group, [value])
     }
-    return groups;
+    return groups
 }
