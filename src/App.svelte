@@ -3,7 +3,7 @@
     import FilterControls from './FilterControls.svelte';
     import { type Facets } from './lib/modrinth/facets';
     import { getProjectCount, getProjectUrl, getRandomProject, TAGS } from './modrinth';
-    import ProjectCard from './ProjectCard.svelte';
+    import ProjectCard, { preload } from './ProjectCard.svelte';
     import Swipable from './lib/component/Swipable.svelte';
     import { ArrowBackIcon, CloseIcon, FavoriteIcon, FilterIcon } from './icons';
     import { prequeue } from './lib/util/prequeue';
@@ -45,7 +45,7 @@
             projectQueue = undefined
             projectP = undefined
         } else {
-            projectQueue = prequeue(3, () => getRandomProject(facets, count))
+            projectQueue = prequeue(3, () => getRandomProject(facets, count).then(preload))
         }
     }
 

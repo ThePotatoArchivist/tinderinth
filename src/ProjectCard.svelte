@@ -10,7 +10,7 @@
     export let project: SearchResultHit
     export let gameVersions: GameVersion[]
     
-    $: imageUrl = project.featured_gallery ?? project.gallery[0]
+    $: imageUrl = getBannerImageUrl(project)
     
     let image: HTMLImageElement | undefined
     let pixelated = false
@@ -33,6 +33,27 @@
         }, [])
         .map(([start, end]) => start === end ? start.version : `${start.version}-${end.version}`)
         .reverse()
+</script>
+
+<script lang="ts" context="module">
+
+    function getBannerImageUrl(project: SearchResultHit): string | undefined {
+        return project.featured_gallery ?? project.gallery[0]        
+    }
+
+    export function preload(project: SearchResultHit) {
+        const img1 = new Image()
+        img1.src = project.icon_url
+        
+        const banner = getBannerImageUrl(project)
+        if (banner !== undefined) {
+            const img2 = new Image()
+            img2.src = banner
+        }
+
+        return project
+    }
+    
 </script>
 
 <div class="card">
