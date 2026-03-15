@@ -94,7 +94,7 @@
     }
 </script>
 
-<svelte:window {onmousemove} {onmouseup} {ontouchmove} ontouchend={onmouseup} />
+<svelte:window {onmousemove} {onmouseup} {ontouchmove} ontouchend={onmouseup} ontouchcancel={onmouseup} />
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div bind:this={element} style:translate="{offsetX}px {offsetY}px" class:dragged {onmousedown} {ontouchstart} out:animation|global>
