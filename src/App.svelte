@@ -13,6 +13,8 @@
     let projectP: Promise<SearchResultHit> | undefined
     let savedProjects: SearchResultHit[] = []
     
+    let swipable: Swipable | undefined
+    
     $: count = facets === undefined ? Promise.resolve(0) : getProjectCount(facets)
     
     async function roll(count: number) {
@@ -24,6 +26,21 @@
     }
 
 </script>
+
+<svelte:window on:keydown={event => {
+    if (swipable === undefined) return
+    switch (event.key) {
+        case 'ArrowLeft':
+            swipable.swipeLeft()
+            break
+        case 'ArrowRight':
+            swipable.swipeRight()
+            break
+        default:
+            return
+    }
+    event.preventDefault()
+}} />
 
 <main>
     {#await TAGS}
@@ -52,6 +69,7 @@
                             Loading...
                         {:then project} 
                                 <Swipable
+                                    bind:this={swipable}
                                     onSwipeLeft={() => {
                                         count.then(roll)
                                     }}

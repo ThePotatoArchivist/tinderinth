@@ -27,13 +27,13 @@
         return swipeDirection ? fly(node, {duration: 500, x: swipeDirection}) : {duration: 0}
     }
     
-    function swipeLeft() {
+    export function swipeLeft() {
         swipeDirection = -SWIPE_ANIMATION_DISTANCE
         onSwipe?.()
         onSwipeLeft?.()
     }
     
-    function swipeRight() {
+    export function swipeRight() {
         swipeDirection = SWIPE_ANIMATION_DISTANCE
         onSwipe?.()
         onSwipeRight?.()
