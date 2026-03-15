@@ -23,11 +23,11 @@ import type { EventHandler, MouseEventHandler, TouchEventHandler } from "svelte/
     let element: HTMLDivElement
 
     let animateCallback: number | undefined
-    let lastFrameTime = 0
+    let lastFrameTime: number | undefined
     
     function animate() {
         animateCallback = requestAnimationFrame(time => {
-            const deltaTime = lastFrameTime === 0 ? 0 : time - lastFrameTime
+            const deltaTime = lastFrameTime === undefined ? 0 : time - lastFrameTime
             lastFrameTime = time
             
             offsetX += movementX * deltaTime
@@ -60,6 +60,14 @@ import type { EventHandler, MouseEventHandler, TouchEventHandler } from "svelte/
         event.preventDefault()
     }
     
+    const ontouchstart: TouchEventHandler<HTMLElement> = event => {
+        const touch = event.touches.item(0)
+        if (touch === null) return
+        lastTouchX = touch.screenX
+        lastTouchY = touch.screenY
+        onmousedown(event)
+    }
+    
     const onmousemove: MouseEventHandler<Window> = event => {
         if (!dragged) return
         offsetX += movementX = event.movementX
@@ -71,6 +79,7 @@ import type { EventHandler, MouseEventHandler, TouchEventHandler } from "svelte/
         if (!dragged) return
         const touch = event.touches.item(0)
         if (touch === null) return
+        
         offsetX += movementX = touch.screenX - lastTouchX
         offsetY += touch.screenY - lastTouchY
         lastTouchX = touch.screenX
@@ -103,7 +112,7 @@ import type { EventHandler, MouseEventHandler, TouchEventHandler } from "svelte/
 <svelte:window {onmousemove} {onmouseup} {ontouchmove} ontouchend={onmouseup} />
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div bind:this={element} style:translate="{offsetX}px {offsetY}px" {onmousedown} ontouchstart={onmousedown} out:fade|global={{duration: 250}}>
+<div bind:this={element} style:translate="{offsetX}px {offsetY}px" {onmousedown} {ontouchstart} out:fade|global={{duration: 250}}>
     {@render children()}
 </div>
 
