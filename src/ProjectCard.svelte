@@ -31,8 +31,8 @@
 
 <style>
     .card {
-        height: 45rem;
-        width: 30rem;
+        height: 30rem;
+        width: 20rem;
         display: grid;
         grid-template-columns: 1fr 3fr;
         grid-template-rows: 2fr auto 3fr;
