@@ -9,11 +9,12 @@
     import { prequeue } from './lib/util/prequeue';
     import { createEventDispatcher } from 'svelte';
     import PopupButton from './lib/component/PopupButton.svelte';
+    import { compileFilters, type Filters } from './lib/modrinth/filters';
 
     export let projectType: string
     export let tags: TagTypes
     
-    let facets: Facets
+    let filters: Filters
     
     let projectQueue: AsyncIterator<SearchResultHit> | undefined
     let projectP: Promise<SearchResultHit> | undefined
@@ -25,7 +26,9 @@
         save: SearchResultHit
     }>()
     
-    $: if (facets) projectQueue = undefined
+    $: facets = filters === undefined ? undefined : compileFilters(projectType, filters)
+    
+    $: if (filters) projectQueue = undefined
             
     function showNext() {
         if (facets === undefined) return
@@ -78,7 +81,7 @@
         Filters
     </svelte:fragment>
 
-    <FilterControls {tags} bind:facets {projectType} />
+    <FilterControls {tags} bind:filters {projectType} />
 
 </PopupButton>
 
