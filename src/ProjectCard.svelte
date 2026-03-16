@@ -69,7 +69,7 @@
     </div>
     <h2>
         <a href={getProjectUrl(project.project_id)} target="_blank" on:mousedown|stopPropagation on:touchstart|stopPropagation /*prevent swiping*/>
-            {project.title}
+            <span class="ul">{project.title}</span>
             <OpenNewIcon />
         </a>
     </h2>
@@ -180,5 +180,13 @@
         display: inline-block;
         width: 1em;
         height: 1em;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    
+    a:hover .ul {
+        text-decoration: underline;
     }
 </style>

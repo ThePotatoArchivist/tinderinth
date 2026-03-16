@@ -17,7 +17,7 @@
     }
 </script>
 
-<button on:click={() => open = true} command="show-modal">
+<button on:click={() => open = true} command="show-modal" {...$$restProps}>
     <slot name="button" />
 </button>
 

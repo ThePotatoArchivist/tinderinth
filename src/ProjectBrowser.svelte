@@ -5,7 +5,7 @@
     import { getProjectCount, getRandomProject, type TagTypes } from './modrinth';
     import ProjectCard, { preload } from './ProjectCard.svelte';
     import Swipable from './lib/component/Swipable.svelte';
-    import { ArrowBackIcon, CloseIcon, FavoriteIcon, FilterIcon } from './icons';
+    import { CloseIcon, FavoriteIcon, FilterIcon } from './icons';
     import { prequeue } from './lib/util/prequeue';
     import { createEventDispatcher } from 'svelte';
     import PopupButton from './lib/component/PopupButton.svelte';
@@ -24,19 +24,17 @@
     let swipable: Swipable | undefined
     
     const dispatch = createEventDispatcher<{
-        exit: undefined
         save: SearchResultHit
     }>()
     
-    $: facets = compileFilters(projectType, filters)
-    
     $: if (filters) projectQueue = undefined
     
-    $: if (!filtersOpen && projectQueue === undefined) showNext()
+    $: if (!filtersOpen && projectQueue === undefined && projectP === NEVER_RESOLVED) showNext()
             
     function showNext() {
         if (projectQueue === undefined) {
             projectP = NEVER_RESOLVED
+            const facets = compileFilters(projectType, filters)
             getProjectCount(facets)
                 .then(count => {
                     setupQueue(facets!, count)
@@ -71,43 +69,28 @@
     event.preventDefault()
 }} />
 
-<button on:click={() => {
-    dispatch('exit')
-}} aria-label="Back to project types">
-    <ArrowBackIcon />
-</button>
-
-<PopupButton bind:open={filtersOpen}>
-    <svelte:fragment slot="button">
-        <FilterIcon />
-        Filters
-    </svelte:fragment>
-
-    <FilterControls {tags} bind:filters {projectType} />
-
-</PopupButton>
-
-{#if projectQueue !== undefined || !filtersOpen}
+<div class="container">
     <div class="card-container">
         {#key projectP}
             {#await projectP}
-                Loading...
+                <div>Loading...</div>
             {:then project} 
-                    <Swipable
-                        bind:this={swipable}
-                        onSwipeLeft={() => {
-                            showNext()
-                        }}
-                        onSwipeRight={() => {
-                            dispatch('save', project)
-                            showNext()
-                        }}
-                    >
-                        <ProjectCard {project} gameVersions={tags.versions} />
-                    </Swipable>
+                <Swipable
+                    bind:this={swipable}
+                    onSwipeLeft={() => {
+                        showNext()
+                    }}
+                    onSwipeRight={() => {
+                        dispatch('save', project)
+                        showNext()
+                    }}
+                >
+                    <ProjectCard {project} gameVersions={tags.versions} />
+                </Swipable>
             {/await}
         {/key}
     </div>
+
     <div class="buttons">
         <button on:click={() => swipable?.swipeLeft()} aria-label="dismiss">
             <CloseIcon />
@@ -116,15 +99,37 @@
             <FavoriteIcon />
         </button>
     </div>
-{/if}
+    <div class="buttons">
+        <slot name="buttons-left" />
+
+        <PopupButton bind:open={filtersOpen} aria-label="Filters">
+            <FilterIcon slot="button" />
+
+            <FilterControls {tags} bind:filters {projectType} />
+        </PopupButton>
+
+        <slot name="buttons-right" />
+    </div>
+</div>
 
 <style>
+    .container {
+        height: 100%;
+        max-width: 40rem;
+        margin: auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
     .card-container {
         width: 100%;
-        max-width: 40rem;
-        align-self: center;
         position: relative;
         flex-grow: 1;
+        display: grid;
+        place-items: center;
     }
     
     .buttons {
@@ -132,7 +137,8 @@
         gap: 1rem;
     }
     
-    .buttons button {
+    .buttons :global(button) {
+        flex-basis: 0;
         flex-grow: 1;
     }
 </style>

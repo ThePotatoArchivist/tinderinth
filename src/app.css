@@ -22,6 +22,10 @@ body {
     display: contents;
 }
 
+button {
+    font-size: inherit;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

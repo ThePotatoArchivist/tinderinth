@@ -1,12 +1,11 @@
 <script lang="ts">
     import type { TagTypes } from './modrinth';
-    import { compileFacets } from './lib/modrinth/facets';
     import type { Category } from '@xmcl/modrinth';
     import FilterButtonGroup from './lib/component/FilterButtonGroup.svelte';
     import { groupby } from './lib/util/misc';
     import CheckButtonGroup from './lib/component/CheckButtonGroup.svelte';
     import { text } from './text';
-    import { compileFilters, emptyFilters, isRelevantCategory, isRelevantLoader, SIDED_PROJECT_TYPES } from './lib/modrinth/filters';
+    import { emptyFilters, isRelevantCategory, isRelevantLoader, SIDED_PROJECT_TYPES } from './lib/modrinth/filters';
 
     export let tags: TagTypes
     const { categories, loaders, versions } = tags
@@ -17,6 +16,7 @@
     let allLoaders = false
     let allVersions = false
     
+    $: hasHiddenLoaders = projectType === 'mod'
     $: relevantCategories = categories.filter(isRelevantCategory(projectType))
     $: relevantLoaders = loaders.filter(isRelevantLoader(projectType, allLoaders))
     $: relevantVersions = allVersions ? versions : versions.filter(e => e.version_type === 'release')
@@ -25,27 +25,31 @@
 </script>
 
 <div>
-    {#each categoryHeaders.keys() as header (header)}
+    {#each categoryHeaders.keys() as header, index (header)}
         {@const categories = categoryHeaders.get(header)!}
-        <h3>{text(header)}</h3>
-        <FilterButtonGroup bind:states={filters.categoryFilters} options={categories} let:option>
-            {@const tOption = option as Category}
-            {#if tOption.icon}
-                <div class="fit-icon">
-                    {@html tOption.icon}
-                </div>
-            {/if}
-            {text(tOption.name)}
-        </FilterButtonGroup>
+        <details open={index == 0}>
+            <summary>{text(header)}</summary>
+            <FilterButtonGroup bind:states={filters.categoryFilters} options={categories} let:option>
+                {@const tOption = option as Category}
+                {#if tOption.icon}
+                    <div class="fit-icon">
+                        {@html tOption.icon}
+                    </div>
+                {/if}
+                {text(tOption.name)}
+            </FilterButtonGroup>
+        </details>
     {/each}
 </div>
 
 {#if relevantLoaders.length > 1}
     <div>
-        <label>
-            <input type="checkbox" bind:checked={allLoaders} />
-            Show all loaders
-        </label>
+        {#if hasHiddenLoaders}
+            <label>
+                <input type="checkbox" bind:checked={allLoaders} />
+                Show all loaders
+            </label>
+        {/if}
         
         <CheckButtonGroup options={relevantLoaders} bind:value={filters.selectedLoaders} let:option>
             <div class="fit-icon">
@@ -81,8 +85,6 @@
         {/each}
     </select>
 </div>
-
-<div>{compileFacets(compileFilters(projectType, filters))}</div>
 
 <style>
     .fit-icon {

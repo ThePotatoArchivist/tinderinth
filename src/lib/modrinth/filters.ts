@@ -30,9 +30,9 @@ export function isRelevantCategory(projectType: string) {
 }
 
 export function isRelevantLoader(projectType: string, allLoaders: boolean) {
-    return (e: Loader) => e.supported_project_types.includes(projectType) 
-        && (allLoaders || projectType !== 'mod' || MAIN_MOD_LOADERS.includes(e.name))
-        && (!e.supported_project_types.includes('plugin') && !e.supported_project_types.includes('datapack') || projectType !== 'mod')
+    return (loader: Loader) => loader.supported_project_types.includes(projectType) 
+        && (allLoaders || projectType !== 'mod' || MAIN_MOD_LOADERS.includes(loader.name))
+        && (!loader.supported_project_types.includes('plugin') && !loader.supported_project_types.includes('datapack') || projectType !== 'mod')
 
 }
 
