@@ -1,12 +1,13 @@
 <script lang="ts">
-    import { deserializeFilterSet, emptyFilters, serializeFilterSet, type Filters, type SerializedFilters } from "./lib/modrinth/filters";
+    import { emptyFilters } from "./lib/modrinth/filters";
+    import { deserializeFilterSet, serializeFilterSet, type FilterSet, type SerializedFilterSet } from "./lib/modrinth/filter-serialization";
     import { localStoreCustom } from "./lib/util/localStore";
     import type { TagTypes } from "./modrinth";
 
     export let tags: TagTypes
     export let projectType: string
     
-    const savedFilters = localStoreCustom<Record<string, Filters>, Record<string, SerializedFilters>>(
+    const savedFilters = localStoreCustom<FilterSet, SerializedFilterSet>(
         'saved_filters', 
         {},
         serializeFilterSet,
