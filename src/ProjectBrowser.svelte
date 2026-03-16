@@ -10,6 +10,7 @@
     import { createEventDispatcher } from 'svelte';
     import PopupButton from './lib/component/PopupButton.svelte';
     import { compileFilters, emptyFilters } from './lib/modrinth/filters';
+    import { NEVER_RESOLVED } from './lib/util/misc';
         
     export let projectType: string
     export let tags: TagTypes
@@ -17,8 +18,9 @@
     export let filters = emptyFilters()
     
     let projectQueue: AsyncIterator<SearchResultHit> | undefined
-    let projectP: Promise<SearchResultHit> | undefined
+    let projectP: Promise<SearchResultHit> = NEVER_RESOLVED
 
+    let filtersOpen = true
     let swipable: Swipable | undefined
     
     const dispatch = createEventDispatcher<{
@@ -29,10 +31,12 @@
     $: facets = compileFilters(projectType, filters)
     
     $: if (filters) projectQueue = undefined
+    
+    $: if (!filtersOpen && projectQueue === undefined) showNext()
             
     function showNext() {
         if (projectQueue === undefined) {
-            projectP = new Promise(() => {})
+            projectP = NEVER_RESOLVED
             getProjectCount(facets)
                 .then(count => {
                     setupQueue(facets!, count)
@@ -43,7 +47,7 @@
     }
     
     function shiftQueue() {
-        projectP = projectQueue?.next().then(({value}) => value)
+        projectP = projectQueue?.next().then(({value}) => value) ?? NEVER_RESOLVED
     }
     
     function setupQueue(facets: Facets, count: number) {
@@ -73,7 +77,7 @@
     <ArrowBackIcon />
 </button>
 
-<PopupButton open>
+<PopupButton bind:open={filtersOpen}>
     <svelte:fragment slot="button">
         <FilterIcon />
         Filters
@@ -83,9 +87,7 @@
 
 </PopupButton>
 
-{#if projectP === undefined}
-    <button on:click={showNext}>Go</button>
-{:else}
+{#if projectQueue !== undefined || !filtersOpen}
     <div class="card-container">
         {#key projectP}
             {#await projectP}

@@ -41,3 +41,5 @@ export function transformKey<K, L, V>(transform: (key: K) => L): (entry: [K, V])
 export function keyIs<K, L extends K, V>(predicate: (key: K) => key is L) {
     return (entry: [K, V]): entry is [L, V] => predicate(entry[0])
 }
+
+export const NEVER_RESOLVED = new Promise<never>(() => {})
