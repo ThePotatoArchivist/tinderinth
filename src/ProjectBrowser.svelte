@@ -9,12 +9,12 @@
     import { prequeue } from './lib/util/prequeue';
     import { createEventDispatcher } from 'svelte';
     import PopupButton from './lib/component/PopupButton.svelte';
-    import { compileFilters, type Filters } from './lib/modrinth/filters';
+    import { compileFilters, emptyFilters, type Filters } from './lib/modrinth/filters';
 
     export let projectType: string
     export let tags: TagTypes
     
-    let filters: Filters
+    export let filters: Filters = emptyFilters()
     
     let projectQueue: AsyncIterator<SearchResultHit> | undefined
     let projectP: Promise<SearchResultHit> | undefined
@@ -26,13 +26,11 @@
         save: SearchResultHit
     }>()
     
-    $: facets = filters === undefined ? undefined : compileFilters(projectType, filters)
+    $: facets = compileFilters(projectType, filters)
     
     $: if (filters) projectQueue = undefined
             
     function showNext() {
-        if (facets === undefined) return
-
         if (projectQueue === undefined) {
             projectP = new Promise(() => {})
             getProjectCount(facets)

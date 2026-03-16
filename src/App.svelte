@@ -10,9 +10,10 @@
     let savedProjects: (SearchResultHit & {id: string} | Project)[] = []
     let savedProjectIds = localStore<string[]>("saved_projects", [])
     
-    modrinth.getProjects($savedProjectIds).then(projects =>
-        savedProjects = [...projects, ...savedProjects]
-    )
+    if ($savedProjectIds.length > 0)
+        modrinth.getProjects($savedProjectIds).then(projects =>
+            savedProjects = [...projects, ...savedProjects]
+        )
 </script>
 
 <main>

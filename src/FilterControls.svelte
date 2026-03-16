@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { TagTypes } from './modrinth';
-    import { compileFacets, type Facets } from './lib/modrinth/facets';
+    import { compileFacets } from './lib/modrinth/facets';
     import type { Category } from '@xmcl/modrinth';
     import FilterButtonGroup from './lib/component/FilterButtonGroup.svelte';
     import { groupby } from './lib/util/misc';
